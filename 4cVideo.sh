@@ -10,11 +10,13 @@ read -p "Where do you want the encode to start? (Entered HH:MM:SS format)" -i 00
 echo "Start Time entered $starttime"
 read -p "Where should it end? (Entered HH:MM:SS format)" -i 00:05:00 -e endtime
 echo "End Time Entered $endtime"
+ahur=$(echo $starttime | awk -F: '{print $1}') # Get hours of startime
 amin=$(echo $starttime | awk -F: '{print $2}') # Get minutes of starttime
 asec=$(echo $starttime | awk -F: '{print $3}') # Get seconds of starttime
+bhur=$(echo $endtime | awk -F: '{print $1}') # Get hour of endtime
 bmin=$(echo $endtime | awk -F: '{print $2}') # Get minutes of endtime
 bsec=$(echo $endtime | awk -F: '{print $3}') # Get seconds of endtime
-time=$(echo "($bmin - $amin)*60 + ($bsec-$asec)" | bc) # Calculate file size time integer
+time=$(echo "($bhur - $ahur)*3600 + ($bmin - $amin)*60 + ($bsec-$asec)" | bc) # Calculate file size time integer
 echo "Total Clip Length $time Seconds"
 read -p "Would you like to make changes to the video? (resolution,FPS,rotation) [y/n]" videofilterans
 if [[ $videofilterans = y ]] ; then
@@ -275,7 +277,7 @@ break
 echo "Specify the file size would you like to target in MB:"
 read target
 echo "What codec would you like to use?" #select desired codec
-codectype=("VP8 - Low Quality, Fast Encode" "VP9 8bit - High Quality, Slow Encode" "VP9 10bit - High Quality, Slow Encode (source must be 10 bit to make any difference)" "AVC MP4 High Quality")
+codectype=("VP8 - Low Quality, Fast Encode" "VP9 8bit - High Quality, Slow Encode" "VP9 10bit - High Quality, Slow Encode (source must be 10 bit to make any difference)" "AVC MP4 High Quality" "AV1 8bit - High Quality, Slow Encode" "AV1 10bit - High Quality, Slow Encode (source must be 10 bit to make any difference)" "AV1 MP4 High Quality")
 select selectedcodec in "${codectype[@]}"; do
 case $selectedcodec in
 "VP8 - Low Quality, Fast Encode")
@@ -337,6 +339,63 @@ break
 ;;
 "AVC MP4 High Quality")
 codec="libx264 -crf 20 -preset slow -pix_fmt yuv420p -movflags +faststart"
+echo "Should this clip contain audio? Y/N (Audio increases filesize significantly)"
+read answer2
+if [ $answer2 = y ] ; then
+echo "What audio quality would you like? 0.1-2 with 2 being highest."
+read qualityanswer
+audio="-c:a aac -q:a $qualityanswer"
+if [ $qualityanswer -ge 2 ] ; then
+size="(($target-1))"
+else
+size="$target"
+fi
+else
+audio="-an"
+size="$target"
+fi
+break
+;;
+"AV1 8bit - High Quality, Slow Encode")
+codec="libaom-av1 -crf 20 -preset slow -pix_fmt yuv420p -movflags +faststart"
+echo "Should this clip contain audio? Y/N (Audio increases filesize significantly)"
+read answer2
+if [ $answer2 = y ] ; then
+echo "What audio quality would you like? 1-10 with 10 being highest."
+read qualityanswer
+audio="-acodec libvorbis -aq $qualityanswer"
+if [ $qualityanswer -ge 5 ] ; then
+size="(($target-1))"
+else
+size="$target"
+fi
+else
+audio="-an"
+size="$target"
+fi
+break
+;;
+"AV1 10bit - High Quality, Slow Encode (source must be 10 bit to make any difference)")
+codec="libaom-av1 -crf 20 -preset slow -pix_fmt yuv420p10le -movflags +faststart"
+echo "Should this clip contain audio? Y/N (Audio increases filesize significantly)"
+read answer2
+if [ $answer2 = y ] ; then
+echo "What audio quality would you like? 1-10 with 10 being highest."
+read qualityanswer
+audio="-acodec libvorbis -aq $qualityanswer"
+if [ $qualityanswer -ge 5 ] ; then
+size="(($target-1))"
+else
+size="$target"
+fi
+else
+audio="-an"
+size="$target"
+fi
+break
+;;
+"AV1 MP4 High Quality")
+codec="libaom-av1 -crf 20 -preset slow -pix_fmt yuv420p -movflags +faststart"
 echo "Should this clip contain audio? Y/N (Audio increases filesize significantly)"
 read answer2
 if [ $answer2 = y ] ; then
