@@ -16,7 +16,7 @@ asec=$(echo $starttime | awk -F: '{print $3}') # Get seconds of starttime
 bhur=$(echo $endtime | awk -F: '{print $1}') # Get hour of endtime
 bmin=$(echo $endtime | awk -F: '{print $2}') # Get minutes of endtime
 bsec=$(echo $endtime | awk -F: '{print $3}') # Get seconds of endtime
-time=$(echo "($bhur - $ahur)*3600 + ($bmin - $amin)*60 + ($bsec-$asec)" | bc) # Calculate file size time integer
+time=$(echo "($bhur - $ahur)*3600 + ($bmin - $amin)*60 + ($bsec - $asec)" | bc) # Calculate file size time integer
 echo "Total Clip Length $time Seconds"
 read -p "Would you like to make changes to the video? (resolution,FPS,rotation) [y/n]" videofilterans
 if [[ $videofilterans = y ]] ; then
