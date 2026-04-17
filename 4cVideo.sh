@@ -113,8 +113,13 @@ audio="-acodec libvorbis -aq $qualityanswer"
 if [ $qualityanswer -ge 5 ] ; then
 size="4.5"
 else
-size="5"
+if [ $qualityanswer -ge 3 ] ; then
+size="5.25"
+else
+size="5.5"
 fi
+fi
+break
 break
 ;;
 "VP9 8bit - High Quality, Slow Encode")
@@ -126,7 +131,11 @@ audio="-acodec libvorbis -aq $qualityanswer"
 if [ $qualityanswer -ge 5 ] ; then
 size="4.5"
 else
-size="5"
+if [ $qualityanswer -ge 3 ] ; then
+size="5.25"
+else
+size="5.5"
+fi
 fi
 break
 ;;
@@ -139,8 +148,13 @@ audio="-acodec libvorbis -aq $qualityanswer"
 if [ $qualityanswer -ge 5 ] ; then
 size="4.5"
 else
-size="5"
+if [ $qualityanswer -ge 3 ] ; then
+size="5.25"
+else
+size="5.5"
 fi
+fi
+break
 break
 ;;
 "AVC MP4 High Quality")
@@ -149,11 +163,16 @@ extension=mp4
 echo "What audio quality would you like? 0.1-2 with 2 being highest."
 read qualityanswer
 audio="-c:a aac -q:a $qualityanswer"
-if [ $qualityanswer -ge 2 ] ; then
+if [ $qualityanswer -ge 5 ] ; then
 size="4.5"
 else
-size="5"
+if [ $qualityanswer -ge 3 ] ; then
+size="5.25"
+else
+size="5.5"
 fi
+fi
+break
 break
 ;;
 esac
@@ -178,8 +197,13 @@ audio="-acodec libvorbis -aq $qualityanswer"
 if [ $qualityanswer -ge 5 ] ; then
 size="8"
 else
+if [ $qualityanswer -ge 3 ] ; then
+size="8.5"
+else
 size="9"
 fi
+fi
+break
 else
 audio="-an"
 size="10"
@@ -198,7 +222,11 @@ audio="-acodec libvorbis -aq $qualityanswer"
 if [ $qualityanswer -ge 5 ] ; then
 size="8"
 else
+if [ $qualityanswer -ge 3 ] ; then
+size="8.5"
+else
 size="9"
+fi
 fi
 else
 audio="-an"
@@ -218,7 +246,11 @@ audio="-acodec libvorbis -aq $qualityanswer"
 if [ $qualityanswer -ge 5 ] ; then
 size="8"
 else
+if [ $qualityanswer -ge 3 ] ; then
+size="8.5"
+else
 size="9"
+fi
 fi
 else
 audio="-an"
@@ -235,10 +267,14 @@ if [ $answer2 = y ] ; then
 echo "What audio quality would you like? 0.1-2 with 2 being highest."
 read qualityanswer
 audio="-c:a aac -q:a $qualityanswer"
-if [ $qualityanswer -ge 2 ] ; then
+if [ $qualityanswer -ge 5 ] ; then
 size="8"
 else
+if [ $qualityanswer -ge 3 ] ; then
+size="8.5"
+else
 size="9"
+fi
 fi
 else
 audio="-an"
